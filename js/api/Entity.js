@@ -1,7 +1,7 @@
 /**
  * Класс Entity - базовый для взаимодействия с сервером.
  * Имеет свойство URL, равно пустой строке.
- * Имеет свойство HOST, равно 'https://bhj-diplom.letsdocode.ru'.
+ * Имеет свойство HOST, равно 'http://bhj-diploma.u-w.me'.
  * */
 class Entity {
 
@@ -11,7 +11,13 @@ class Entity {
    * (в зависимости от того, что наследуется от Entity)
    * */
   static list( data, callback = f => f ) {
-
+    return createRequest ({
+      url: this.HOST + this.URl,
+      method: 'GET',
+      responseType: 'json',
+      data,
+      callback
+    });
   }
 
   /**
@@ -20,7 +26,13 @@ class Entity {
    * что наследуется от Entity)
    * */
   static create( data, callback = f => f ) {
-
+    return createRequest ({
+     url: this.HOST + this.URl,
+     method: 'POST',
+     responseType: 'json',
+     data: Object.assign ({_method: 'PUT'}, data),
+     callback
+    });
   }
 
   /**
@@ -28,7 +40,13 @@ class Entity {
    * (в зависимости от того, что наследуется от Entity)
    * */
   static get( id = '', data, callback = f => f ) {
-
+    return createRequest ({
+     url: this.HOST + this.URl,
+     method: 'GET',
+     responseType: 'json',
+     data: Object.assign ({id}, data),
+     callback
+    });
   }
 
   /**
@@ -36,7 +54,15 @@ class Entity {
    * (в зависимости от того, что наследуется от Entity)
    * */
   static remove( id = '', data, callback = f => f ) {
-
+  return createRequest ({
+    url: this.HOST + this.URl,
+    method: 'POST',
+    responseType: 'json',
+    data: Object.assign ({id}, {_method: 'DELETE'}, data),
+    callback
+  });
   }
 }
 
+Entity.URL = '';
+Entity.HOST = 'https://bhj-diplom.letsdocode.ru/'
