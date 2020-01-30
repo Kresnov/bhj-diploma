@@ -49,16 +49,18 @@ class AccountsWidget {
    * метода render()
    * */
   update() {
-    const user = User.current();
-    if (user != null) {
-      let account = Account.list({}, accountsList => {
-        console.log(accountsList);
-        //localStorage.setItem("accountslist", JSON.stringify(accountsList.data));
-        this.clear();
-        this.render(accountsList.data);
-        this.registerEvents();
-      });
-    }
+    if (User.current()) {
+      Account.list(User.current(), (err, response) => {
+          if (response) {
+              this.clear()
+              for (let i = 0; i < response.data.length; i++) {
+                  this.renderItem(response.data[i]);
+              }
+          } else {
+              console.log(err)
+          }
+      })
+  }
   }
 
   /**
@@ -79,7 +81,7 @@ class AccountsWidget {
    * в боковой колонке
    * */
   clear() {
-    const account = document.querySelectorAll('.account');
+    const accounts = document.querySelectorAll('.account');
     for (let acc of accounts) {
       acc.remove();
     }

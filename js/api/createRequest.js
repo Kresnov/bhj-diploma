@@ -15,7 +15,7 @@ const createRequest = (options = {}) => {
       if (xhr.status === 200 && xhr.readyState === 4) {
         callback(err, xhr.response);
       } else {
-        let err = this.responseType;
+        const err = this.responseType;
       }
     }
   
@@ -37,8 +37,9 @@ const createRequest = (options = {}) => {
       }
     }
   
+    xhr.open(options.method, options.url);
+
     try {
-      xhr.open(options.method, options.url);
       xhr.send(formdata);
     } catch (err) {
       options.callback(err);

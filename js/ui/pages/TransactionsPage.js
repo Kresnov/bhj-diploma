@@ -32,13 +32,16 @@ class TransactionsPage {
    * TransactionsPage.removeAccount соответственно
    * */
   registerEvents() {
-    document.querySelector('.remove-account').addEventListener('click', () => {
-      this.removeAccount();
-    })
-    this.element.addEventListener('click', (e) => {
-      if(e.target.closest('.transaction__remove')) {
-        let id = e.target.closest('.transaction__remove').dataset.id;
-        this.removeTransaction(id);
+    this.element.addEventListener( 'click', e => {
+      const transaction__remove = e.target.closest( '.transaction__remove' );
+      if (transaction__remove) {
+        const { id } = transaction__remove.dataset;
+
+        this.removeTransaction( id );
+      }
+      const remove_account = e.target.closest( '.remove-account' );
+      if (remove_account) {
+        this.removeAccount()
       }
     });
   }
@@ -52,16 +55,14 @@ class TransactionsPage {
    * для обновления приложения
    * */
   removeAccount() {
-    if (this.lastOptions) {
-      let confirm = confirm('Вы действительно хотите удалить счёт?');
-      if (confirm) {
-        let id = this.lastOptions.account_id;
-        Account.remove(id, {}, (err, response) => {
-          if (response) {
-            App.update();
-          }          
-        });
-      }      
+    if(!this.lastOptions) {
+      return
+    }
+    if (confirm( 'Вы действительно хотите удалить счёт?' )) {
+    this.clear();
+    let id = document.querySelector('.active').dataset.id
+    
+    Account.remove( id, {_method: "DELETE"}, () => App.update());
     }
   }
 
@@ -89,7 +90,7 @@ class TransactionsPage {
    * */
   render( options ) {
     if (options) {
-      let lastOptions = options;
+      this.lastOptions = options;
       Account.get(options.account_id, {}, (err, response) => {
         if (response) {
           this.renderTitle(response.data.name);
