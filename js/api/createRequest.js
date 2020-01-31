@@ -3,7 +3,7 @@
  * на сервер.
  * */
 const createRequest = (options = {}) => {
-    let xhr = new XMLHttpRequest;
+    let xhr = new XMLHttpRequest();
     let formData = new FormData;
   
     xhr.withCredentials = true;
@@ -40,11 +40,11 @@ const createRequest = (options = {}) => {
     xhr.open(options.method, options.url);
 
     try {
-      xhr.send(formdata);
+      xhr.send(formData);
     } catch (err) {
       options.callback(err);
     }
   
-    return xhr;
+    return xhr
   };
   
