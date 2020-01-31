@@ -35,17 +35,17 @@ class User {
    * Получает информацию о текущем
    * авторизованном пользователе.
    * */
-  static fetch( data, callback = f => f ) {
+  static fetch(data, callback = f => f ) {
     return createRequest ({
-      url: this.HOST + this.URl + '/current',
+      url: this.HOST + this.URL + '/current',
       method: 'GET',
       responseType: 'json',
       data,
       callback: (err, response) => {
-        if (response && response.user) {
-          User.setCurrent(response.user);
+        if (response.user) {
+          this.setCurrent(response.user);
         } else {
-          User.unsetCurrent();
+          this.unsetCurrent();
         }
         callback(err, response);
       }
@@ -60,13 +60,13 @@ class User {
    * */
   static login( data, callback = f => f ) {
     return createRequest ({
-      url: this.HOST + this.URl + '/login',
+      url: this.HOST + this.URL + '/login',
       method: 'POST',
       responseType: 'json',
       data,
       callback: (err, response) => {
-        if (response && response.user) {
-          this.setCurrent(response.user);
+        if (response.user && (response.success === true)) {
+          User.setCurrent(response.user);
         } 
         callback(err, response);
       }      
@@ -79,15 +79,15 @@ class User {
    * сохранить пользователя через метод
    * User.setCurrent.
    * */
-  static register( data, callback = f => f ) {
+  static register(data, callback = f => f ) {
     return createRequest({
-      url: this.HOST + this.URl + '/register',
+      url: this.HOST + this.URL + '/register',
       method: 'POST',
       responseType: 'json',
       data,
       callback: (err, response) => {
-        if (response && response.user) {
-          this.setCurrent(response.user);
+        if (response.user && (response.success === true)) {
+          User.setCurrent(response.user);
         } 
         callback(err, response);
       }         
@@ -100,13 +100,13 @@ class User {
    * */
   static logout( data, callback = f => f ) {
     return createRequest ({
-      url: this.HOST + this.URl + '/login',
+      url: this.HOST + this.URL + '/logout',
       method: 'POST',
       responseType: 'json',
       data,
       callback: (err, response) => {
-        if (response && response.user) {
-          this.unsetCurrent();
+        if (response.user && (response.success === true)) {
+          User.unsetCurrent();
         } 
         callback(err, response);
       }         

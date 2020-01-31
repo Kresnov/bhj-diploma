@@ -8,34 +8,24 @@ const createRequest = (options = {}) => {
   
     xhr.withCredentials = true;
     xhr.responseType = options.responseType;
-  
-    xhr.addEventListener('readystatechange', callBack);
-  
-    function callBack() {
-      if (xhr.status === 200 && xhr.readyState === 4) {
-        callback(err, xhr.response);
-      } else {
-        const err = this.responseType;
-      }
-    }
-  
-    options.data = {};
-  
+    
     if (options.method === 'GET') {
-      let urlData = Object.entries(options.data);
-  
-      urlData.map(([key, value]) => `${key}=${value}`);
-      urlData.join('&');
-  
-      if (urlData) {
-        options.url += '?' + urlData;
+      options.url = options.url + '?';
+      for (let key in options.data) {
+          options.url += `${key}=${options.data[key]}&`;
       }
-  
     } else {
-      for (let element in options.data) {
-        formData.append(element, options.data[element]);
+      for (let key in options.data) {
+          formData.append(key, options.data[key]);
       }
     }
+
+    xhr.addEventListener("readystatechange", function() {
+      if (xhr.readyState === 4 && xhr.status === 200) {
+        let response = xhr.response;
+        options.callback(null, response);
+    }
+})
   
     xhr.open(options.method, options.url);
 
@@ -44,7 +34,7 @@ const createRequest = (options = {}) => {
     } catch (err) {
       options.callback(err);
     }
-  
+    console.log(xhr);
     return xhr
   };
   
