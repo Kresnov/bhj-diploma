@@ -32,20 +32,19 @@ class TransactionsPage {
    * TransactionsPage.removeAccount соответственно
    * */
   registerEvents() {
-    this.element.addEventListener( 'click', e => {
-      const transaction__remove = e.target.closest( '.transaction__remove' );
-      if (transaction__remove) {
-        const { id } = transaction__remove.dataset;
+    const removeAccount = this.element.querySelector(".remove-account");
 
-        this.removeTransaction( id );
-      }
-      const remove_account = e.target.closest( '.remove-account' );
-      if (remove_account) {
-        this.removeAccount()
+    removeAccount.addEventListener("click", () => {
+      this.removeAccount();
+    });
+
+    this.element.addEventListener("click", event => {
+      if (event.target.closest(".transaction__remove")) {
+        let id = event.target.closest(".transaction__remove").dataset.id;
+        this.removeTransaction(id);
       }
     });
   }
-
   /**
    * Удаляет счёт. Необходимо показать диаголовое окно (с помощью confirm())
    * Если пользователь согласен удалить счёт, вызовите
@@ -72,10 +71,9 @@ class TransactionsPage {
    * По удалению транзакции вызовите метод App.update()
    * */
   removeTransaction( id ) {
-    let confirm = confirm('Вы действительно хотите удалить эту транзакцию?');
-    if (confirm) {
+    if (confirm('Вы действительно хотите удалить эту транзакцию?')) {
       Transaction.remove(id, {}, (err, response) => {
-        if (response) {
+        if (response && response.success) {
           App.update();
         }
       });
@@ -119,7 +117,7 @@ class TransactionsPage {
    * Устанавливает заголовок в элемент .content-title
    * */
   renderTitle( name ) {
-    document.querySelector('.content-title').textContent = name;
+    this.element.querySelector('.content-title').textContent = name;
   }
 
   /**
@@ -129,13 +127,20 @@ class TransactionsPage {
   formatDate( date ) {
     let thisDate = new Date(date);
     let months = ['январь', 'февраль', 'март', 'апрель', 'май', 'июнь', 'июль', 'август', 'сентябрь', 'октябрь', 'ноябрь', 'декабрь'];
-    let year = thisDate.getFullYear();
     let month = months[thisDate.getMonth()];
-    let day = thisDate.getDate() < 10 ? (`0${thisDate.getDate()}`) : (thisDate.getDate());
-    let hours = thisDate.getHours() < 10 ? (`0${thisDate.getHours()}`) : (thisDate.getHours());
-    let minutes = thisDate.getMinutes() < 10 ? (`0${thisDate.getMinutes()}`) : (thisDate.getMinutes());
+    let day = thisDate.getDate();
+    let year = thisDate.getFullYear();
+    let hours = thisDate.getHours();
+    let minutes = thisDate.getMinutes();
 
-    return `${day} ${month} ${year} г. в ${hours}:${minutes}`;
+    function format(e) {
+      if (e < 10) {
+        return "0" + e;
+      } else {
+        return e;
+      }
+    };
+    return `${day} ${month} ${year} г. в ${format(hours)}:${format(minutes)}`;
   }
 
   /**
@@ -143,24 +148,28 @@ class TransactionsPage {
    * item - объект с информацией о транзакции
    * */
   getTransactionHTML( item ) {
-        let date = this.formatDate(item.date);
-    let content = `<div class="transaction transaction_${item.type} row">
+    const id = item.id;
+    const name = item.name;
+    const type = item.type;
+    const sum = item.sum;
+    let date = this.formatDate(item.created_at);
+    let content = `<div class="transaction transaction_${type} row">
     <div class="col-md-7 transaction__details">
       <div class="transaction__icon">
           <span class="fa fa-money fa-2x"></span>
       </div>
       <div class="transaction__info">
-          <h4 class="transaction__title">${item.name}</h4>
+          <h4 class="transaction__title">${name}</h4>
           <div class="transaction__date">${date}</div>
       </div>
     </div>
     <div class="col-md-3">
       <div class="transaction__summ">
-      ${item.sum} <span class="currency">₽</span>
+      ${sum} <span class="currency">₽</span>
       </div>
     </div>
     <div class="col-md-2 transaction__controls">
-        <button class="btn btn-danger transaction__remove" data-id="${item.id}">
+        <button class="btn btn-danger transaction__remove" data-id="${id}">
             <i class="fa fa-trash"></i>  
         </button>
     </div>

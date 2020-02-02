@@ -30,11 +30,13 @@ class AccountsWidget {
    * вызывает AccountsWidget.onSelectAccount()
    * */
   registerEvents() {
-    const create_account = document.querySelector(".create-account");
-
-    create_account.addEventListener("click", () => {
-      let modal = App.getModal("createAccount");
-      modal.open();
+    this.element.addEventListener("click", (event) => {
+      if (event.target.closest(".create-account")) {
+        App.getModal("createAccount").open();
+      }
+      if (event.target.closest(".account")) {
+        this.onSelectAccount(event.target.closest(".account"));
+      }
     });
   }
 
@@ -97,12 +99,12 @@ class AccountsWidget {
    * Вызывает App.showPage( 'transactions', { account_id: id_счёта });
    * */
   onSelectAccount( element ) {
-    if (document.querySelector('.active.account')) {
-      document.querySelector('.active.account').classList.remove('active');
-    } 
-    element.classList.add('.active');
-    this.id = element.dataset.id;
-    App.showPage( 'transactions', { account_id: this.id });
+    const account = document.querySelectorAll('.account');
+    for (let i = 0; i < account.length; i++) {
+        account[i].classList.remove('active');
+    }
+    element.classList.add('active');
+    App.showPage('transactions', { account_id: element.dataset.id });
   }
 
   /**
@@ -126,12 +128,6 @@ class AccountsWidget {
    * и добавляет его внутрь элемента виджета
    * */
   renderItem( item ) {
-    let account = document.querySelectorAll(".accounts-panel");
-    account[0].insertAdjacentHTML("beforeend", html);
-    let childs = document.querySelectorAll(".account");
-    let last = childs[childs.length - 1];
-    last.addEventListener("click", () => {
-      this.onSelectAccount(last, accountdata);
-    });
+    this.element.insertAdjacentHTML('beforeEnd', this.getAccountHTML(item))
   }
 }

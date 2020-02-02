@@ -24,13 +24,17 @@ class TransactionsWidget {
    * экземпляра окна
    * */
   registerEvents() {
-    document.querySelector('.create-income-button').addEventListener('click', (e) => {
-      e.preventDefault();
-      App.getModal('newIncome').open();
-    })
-    document.querySelector('.create-expense-button').addEventListener('click', (e) => {
-      e.preventDefault();
-      App.getModal('newExpense').open();
+    const addMoney = this.element.querySelector('.create-income-button');
+    const removeMoney = this.element.querySelector('.create-expense-button');
+
+    addMoney.addEventListener('click', function() {
+      const incomeWindow = App.getModal('newIncome');
+      incomeWindow.open();
+    });
+
+    removeMoney.addEventListener('click', function() {
+      const expenceWindow = App.getModal('newExpense');
+      expenceWindow.open();
     })
   }
 }
