@@ -23,7 +23,7 @@ class CreateTransactionForm extends AsyncForm{
 
     let content = '';
 
-    Account.list({}, (err, response) => {
+    Account.list(User.current(), (err, response) => {
       if (response) {
         for (let i=0; i < response.data.length; i++) {
           let item = response.data[i];

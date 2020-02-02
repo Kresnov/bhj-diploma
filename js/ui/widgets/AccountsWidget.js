@@ -49,8 +49,10 @@ class AccountsWidget {
    * метода render()
    * */
   update() {
-    if (User.current()) {
-      Account.list(User.current(), (err, response) => {
+    let user = User.current();
+
+    if (user) {
+      Account.list(user, (err, response) => {
           if (response) {
               this.clear()
               for (let i = 0; i < response.data.length; i++) {
